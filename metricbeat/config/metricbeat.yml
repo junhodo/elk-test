@@ -32,9 +32,9 @@ processors:
   - add_cloud_metadata: ~
 
 output.elasticsearch:
-  hosts: ['http://elasticsearch:9200']
+  hosts: ['http://0.0.0.0:9200']
   username: elastic
-  password: changeme
+  password: se75407540
 
 ## HTTP endpoint for health checking
 ## https://www.elastic.co/guide/en/beats/metricbeat/current/http-endpoint.html

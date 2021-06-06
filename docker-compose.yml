@@ -19,7 +19,7 @@ services:
       - "9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      ELASTIC_PASSWORD: changeme
+      ELASTIC_PASSWORD: se75407540
       # Use single node discovery in order to disable production mode and avoid bootstrap checks.
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
@@ -66,6 +66,40 @@ services:
       - "5601:5601"
     networks:
       - elk
+    depends_on:
+      - elasticsearch
+
+  metricbeat:
+    build:
+      context: ./metricbeat/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    user: root
+    command:
+      - -e
+      - -system.hostfs=/hostfs
+    volumes:
+      - type: bind
+        source: ./metricbeat/config/metricbeat.yml
+        target: /usr/share/metricbeat/metricbeat.yml
+        read_only: true
+      - type: bind
+        source: /
+        target: /hostfs
+        read_only: true
+      - type: bind
+        source: /sys/fs/cgroup
+        target: /hostfs/sys/fs/cgroup
+        read_only: true
+      - type: bind
+        source: /proc
+        target: /hostfs/proc
+        read_only: true
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
+    network_mode: host
     depends_on:
       - elasticsearch
 
